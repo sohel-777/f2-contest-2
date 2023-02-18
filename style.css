@@ -1,0 +1,39 @@
+*{
+    background-color: black;
+    color: #f2f2f2;
+}
+.container{
+    margin: 100px 100px;
+}
+input{
+    width: 200px;
+    
+}
+button{
+    background-color: #f2f2f2;
+    width: 295px;
+    color: black;
+    margin-bottom: 50px;
+    
+}
+button:hover{
+    cursor: pointer;
+}
+table{
+    border: 1px solid white;
+    border-collapse: collapse;
+    width: 100%;
+    overflow: scroll;
+}
+table tr{
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+    text-align: center;
+
+}
+
+table th,td{
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+}
+  
