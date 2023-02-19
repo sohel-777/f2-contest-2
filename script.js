@@ -1,50 +1,121 @@
+const bookNameElement = document.getElementById('book-name');
+const issueToElement = document.getElementById("issue-to");
+const btnElement = document.getElementById('btn');
+const tableBody = document.querySelector("tbody");
+const books = [
+];
 
-const bookNameInput = document.getElementById('book-name');
-const issuedToInput = document.getElementById('issued-to');
-const issueBookButton = document.querySelector('button[type="submit"]');
-const issuedBooksTable = document.getElementById('issued-books').getElementsByTagName('tbody')[0];
+function handleEdit(event) {
+   const buttonElement  = event.target;
+   console.log(buttonElement);
+    const id = buttonElement.id;
 
+   if (buttonElement.textContent === 'Edit') {
+    event.target.textContent = "Save";
+    const parentElement = buttonElement.parentElement;
 
-const issuedBooks = [];
+    parentElement.removeChild(parentElement.firstChild);
 
+    const input = document.createElement("input");
+    input.id = 'status-inp';
+    input.value = books[id - 1].status;
+    parentElement.insertBefore(input, event.target);
+   } 
+   else{
+      const statusElement = document.getElementById('status-inp');
+      books[id - 1].status = statusElement.value;
+      renderBooksInsideTable();
+   }
 
-issueBookButton.addEventListener('click', function() {
- 
-  const bookName = bookNameInput.value;
-  const issuedTo = issuedToInput.value;
-  const issuedTime = new Date().toLocaleString();
+}
+function createTableRow (data, tableBody, bookId) {
+   
 
- 
-  const issuedBook = {
-    id: issuedBooks.length + 1,
-    book_name: bookName,
-    issued_to: issuedTo,
-    issued_time: issuedTime,
-    status: 'not returned'
-  };
- 
-    issuedBooks.push(issuedBook);
+    const tr = document.createElement("tr");
+    
 
-  
+    const idTd = document.createElement("td");
+    idTd.textContent = bookId;
 
-  
-  const newRow = issuedBooksTable.insertRow();
-  const idCell = newRow.insertCell(0);
-  const bookNameCell = newRow.insertCell(1);
-  const issuedToCell = newRow.insertCell(2);
-  const issuedTimeCell = newRow.insertCell(3);
-  const statusCell = newRow.insertCell(4);
+    const bookNameTd = document.createElement("td");
+    bookNameTd.textContent = data.name;
 
-  idCell.innerHTML = issuedBook.id;
-  bookNameCell.innerHTML = issuedBook.book_name;
-  issuedToCell.innerHTML = issuedBook.issued_to;
-  issuedTimeCell.innerHTML = issuedBook.issued_time;
-  statusCell.innerHTML = issuedBook.status;
-
- 
-  bookNameInput.value = '';
-  issuedToInput.value = '';
-});
+     const issueToTd = document.createElement("td");
+     issueToTd.textContent = data.issuedTo;
 
 
+    const issuedAtTd = document.createElement("td");
+    issuedAtTd.textContent = data.issuedAt;
 
+    const statusTd = document.createElement("td");
+    statusTd.classList.add('flex');
+
+    const button = document.createElement('button');
+    const span = document.createElement('span');
+
+    span.textContent = data.status;
+    const className = data.status === "not returned" ? "red" : "green";
+    span.classList.add(className);
+
+    button.textContent = 'Edit';
+    button.id = bookId;
+    button.addEventListener("click", handleEdit);
+
+    statusTd.appendChild(span);
+    statusTd.appendChild(button);
+     
+    
+
+    tr.appendChild(idTd);
+    tr.appendChild(bookNameTd);
+    tr.appendChild(issueToTd);
+    tr.appendChild(issuedAtTd);
+    tr.appendChild(statusTd);
+
+    
+    tableBody.appendChild(tr);
+}
+
+
+function renderBooksInsideTable() {
+
+    
+
+    tableBody.innerHTML = "";
+
+   books.map(function (book, index) {
+
+   
+    createTableRow(book, tableBody,index+1);
+   })
+}
+
+function handleFormSubmit () {
+    // read book data 
+    const bookName = bookNameElement.value;
+    bookNameElement.value = "";
+
+    // read issued to data 
+    const issuedTo = issueToElement.value;
+    issueToElement.value = "";
+
+    //  book object with issueAd and default status
+
+    if(bookName && issuedTo) {
+        const book = {
+          name: bookName,
+          issuedTo: issuedTo,
+          issuedAt: new Date().toUTCString().substring(0,12),
+          status: "not returned",
+        };
+
+        books.push(book);
+        renderBooksInsideTable();
+    }
+    else {
+        alert("You are trying to enter empty details");
+    }
+    
+}
+
+btnElement.addEventListener('click', handleFormSubmit);
